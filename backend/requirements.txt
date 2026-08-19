@@ -5,4 +5,4 @@ psycopg2-binary==2.9.9
 gunicorn==21.2.0
 pytest==7.4.4
 pytest-django==4.7.0
-flake8==7.0.0
+flake8==7.0.0dj-database-url==2.1.0
