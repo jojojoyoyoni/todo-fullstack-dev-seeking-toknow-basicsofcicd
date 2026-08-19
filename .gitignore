@@ -23,3 +23,7 @@ frontend/dist/
 # Python cache
 __pycache__/
 *.py[cod]
+# Django static files
+backend/staticfiles/
+# Editor backups
+*.save
