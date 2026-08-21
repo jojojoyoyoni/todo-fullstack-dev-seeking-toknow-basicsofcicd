@@ -84,22 +84,43 @@ WSGI_APPLICATION = 'todo_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # ============================================
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.environ.get('DATABASE_URL')
+#     )
+
+# }
+
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
+        # If DATABASE_URL exists (like on Render/Railway), use it!
+        # If it doesn't exist (like local Docker), build it from the split variables in docker-compose.yml
+        default=f"postgresql://{os.environ.get('DB_USER', 'postgres')}:{os.environ.get('DB_PASSWORD', 'postgres')}@{os.environ.get('DB_HOST', 'db')}:{os.environ.get('DB_PORT', '5432')}/{os.environ.get('DB_NAME', 'todo_db')}"
     )
-
 }
+
+# curl -X POST http://localhost:8000/api/auth/login/ -H "Content-Type: application/json" -d '{"username": "testuser", "password": "strongpassword123"}'
+# {"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzMyMDY0NCwiaWF0IjoxNzg3MjM0MjQ0LCJqdGkiOiIwNDc4NDVlYWFlM2Y0MmEzYTVlYWZmNTU0YTg4ODNkNiIsInVzZXJfaWQiOjF9.yEWr6aNvegPZCSi1rNfpkDr7tV3x6xa8InsNqYBnKbQ",
+#  "access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3MjM3ODQ0LCJpYXQiOjE3ODcyMzQyNDQsImp0aSI6IjJmYjE2NzNmYjI4MzRkYzZhODIyM2UxN2NkYmI2YjExIiwidXNlcl9pZCI6MX0.ivUVI8X4rSGcxTsILtVOQZEVWyBbMvKTNyhM6mXsEz
 
 # REST FRAMEWORK
 # ============================================
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # ============================================
